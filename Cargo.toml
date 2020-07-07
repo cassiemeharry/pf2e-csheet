@@ -1,0 +1,18 @@
+[package]
+name = "pf2e-csheet"
+version = "0.1.0"
+authors = ["Cassie Meharry <cassie@prophetessof.tech>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+anyhow = "1"
+lazy_static = "*"
+lopdf = "0.25"
+rusttype = "0.9"
+smartstring = "0.2"
+static_assertions = "1"
+
+[dependencies.pdf_form]
+path = "../../sources/pdf_form"
