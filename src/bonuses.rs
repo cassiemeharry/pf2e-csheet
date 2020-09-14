@@ -1,15 +1,50 @@
+use anyhow::{anyhow, Error, Result};
+use serde::{
+    de::{self, Deserializer, Visitor},
+    Deserialize,
+};
 use smartstring::alias::String;
-use std::{collections::HashSet, fmt, ops};
+use std::{collections::HashSet, fmt, ops, str::FromStr};
 
-use crate::{Ability, ArmorCategory, Character, Proficiency, Skill, WeaponCategory};
+use crate::{
+    resources::{ArmorCategory, Character, WeaponCategory},
+    stats::{Ability, Level, Proficiency, Skill},
+    try_from_str,
+};
 
-#[derive(Copy, Clone, Debug, Default)]
+#[derive(Copy, Clone, Debug, Default, Deserialize)]
+#[serde(try_from = "smartstring::alias::String")]
 pub struct Bonus {
     circumstance: u16,
     item: u16,
-    proficiency: (Proficiency, u8),
+    proficiency: (Proficiency, Level),
     status: u16,
     untyped: i16,
+}
+
+try_from_str!(Bonus);
+
+impl FromStr for Bonus {
+    type Err = Error;
+
+    fn from_str(s: &str) -> Result<Self> {
+        macro_rules! parse_tail {
+            ($tail:literal, $method:ident) => {
+                if s.ends_with($tail) {
+                    let head = &s[..s.len() - $tail.len()];
+                    return Ok(Self::$method(head.parse()?));
+                }
+            };
+        }
+
+        parse_tail!(" circumstance", circumstance);
+        parse_tail!(" item", item);
+        parse_tail!(" status", status);
+        if let Ok(i) = i16::from_str(s) {
+            return Ok(Self::untyped(i));
+        }
+        Err(anyhow!("Failed to parse bonus value {:?}", s))
+    }
 }
 
 impl Bonus {
@@ -31,7 +66,7 @@ impl Bonus {
         }
     }
 
-    pub fn proficiency(p: Proficiency, level: u8) -> Bonus {
+    pub fn proficiency(p: Proficiency, level: Level) -> Bonus {
         Bonus {
             proficiency: (p, level),
             ..Default::default()
@@ -52,23 +87,17 @@ impl Bonus {
         }
     }
 
-    pub fn as_modifier(self, modifies: Modifies) -> Modifier {
-        Modifier {
-            modifies,
-            bonus: self,
-            penalty: Penalty::default(),
-        }
-    }
-
     pub fn total(&self) -> i16 {
-        let p = match self.proficiency {
+        let (p, l) = self.proficiency;
+        let l = l.get() as i16;
+        let p_bonus = match (p, l) {
             (Proficiency::Untrained, _) => 0,
-            (Proficiency::Trained, l) => (l as i16) + 2,
-            (Proficiency::Expert, l) => (l as i16) + 4,
-            (Proficiency::Master, l) => (l as i16) + 6,
-            (Proficiency::Legendary, l) => (l as i16) + 8,
+            (Proficiency::Trained, l) => l + 2,
+            (Proficiency::Expert, l) => l + 4,
+            (Proficiency::Master, l) => l + 6,
+            (Proficiency::Legendary, l) => l + 8,
         };
-        self.circumstance as i16 + self.item as i16 + p + self.status as i16 + self.untyped
+        self.circumstance as i16 + self.item as i16 + p_bonus + self.status as i16 + self.untyped
     }
 }
 
@@ -78,8 +107,8 @@ impl fmt::Display for Bonus {
     }
 }
 
-impl From<(Proficiency, u8)> for Bonus {
-    fn from((p, level): (Proficiency, u8)) -> Bonus {
+impl From<(Proficiency, Level)> for Bonus {
+    fn from((p, level): (Proficiency, Level)) -> Bonus {
         p.bonus(level)
     }
 }
@@ -114,16 +143,17 @@ impl ops::AddAssign for Bonus {
     }
 }
 
-impl ops::Mul<u8> for Bonus {
+impl ops::Mul<Level> for Bonus {
     type Output = Bonus;
 
-    fn mul(self, level: u8) -> Bonus {
+    fn mul(self, level: Level) -> Bonus {
+        let level = level.get() as u16;
         Bonus {
-            circumstance: self.circumstance * level as u16,
-            item: self.item * level as u16,
+            circumstance: self.circumstance * level,
+            item: self.item * level,
             proficiency: self.proficiency,
-            status: self.status * level as u16,
-            untyped: self.untyped * level as u16 as i16,
+            status: self.status * level,
+            untyped: self.untyped * level as i16,
         }
     }
 }
@@ -134,6 +164,90 @@ pub struct Penalty {
     item: u16,
     status: u16,
     untyped: u16,
+}
+
+try_from_str!(Penalty);
+
+impl FromStr for Penalty {
+    type Err = Error;
+
+    fn from_str(s: &str) -> Result<Self> {
+        macro_rules! parse_tail {
+            ($tail:literal, $method:ident) => {
+                if s.ends_with($tail) {
+                    let head = &s[..s.len() - $tail.len()];
+                    let mut value = head.parse::<i16>()?;
+                    if value < 0 {
+                        value = -value;
+                    }
+                    return Ok(Self::$method(value as u16));
+                }
+            };
+        }
+
+        parse_tail!(" circumstance", circumstance);
+        parse_tail!(" item", item);
+        parse_tail!(" status", status);
+        if let Ok(mut i) = i16::from_str(s) {
+            if i < 0 {
+                i = -i;
+            }
+            return Ok(Self::untyped(i as u16));
+        }
+        Err(anyhow!("Failed to parse penalty value {:?}", s))
+    }
+}
+
+impl<'de> Deserialize<'de> for Penalty {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        struct PenaltyVisitor;
+
+        macro_rules! passthru_number {
+	    ($t:ty $(as $dest_t:ty)*, $name:ident) => {
+		fn $name<E>(self, i: $t) -> Result<Penalty, E>
+		where
+		    E: de::Error,
+		{
+		    self.visit_i16(i $(as $dest_t)* as i16)
+		}
+	    }
+	}
+
+        impl<'de> Visitor<'de> for PenaltyVisitor {
+            type Value = Penalty;
+
+            fn expecting(&self, f: &mut fmt::Formatter) -> fmt::Result {
+                write!(f, "an integer or a string of an integer followed by one of circumstance, item, or status")
+            }
+
+            passthru_number!(i64 as i32, visit_i64);
+            passthru_number!(i32, visit_i32);
+            passthru_number!(u64 as i64 as i32, visit_u64);
+            passthru_number!(u32 as i32, visit_u32);
+
+            fn visit_i16<E>(self, mut i: i16) -> Result<Penalty, E>
+            where
+                E: de::Error,
+            {
+                if i < 0 {
+                    i = -i;
+                }
+                Ok(Penalty::untyped(i as u16))
+            }
+
+            fn visit_str<E>(self, s: &str) -> Result<Penalty, E>
+            where
+                E: de::Error,
+            {
+                Penalty::from_str(s).map_err(E::custom)
+            }
+        }
+
+        deserializer.deserialize_any(PenaltyVisitor)
+    }
 }
 
 impl Penalty {
@@ -202,15 +316,32 @@ impl ops::AddAssign for Penalty {
     }
 }
 
-impl ops::Mul<u8> for Penalty {
+impl ops::Add<Bonus> for Penalty {
+    type Output = Modifier;
+
+    fn add(self, bonus: Bonus) -> Modifier {
+        (bonus, self).into()
+    }
+}
+
+impl ops::Add<Penalty> for Bonus {
+    type Output = Modifier;
+
+    fn add(self, penalty: Penalty) -> Modifier {
+        (self, penalty).into()
+    }
+}
+
+impl ops::Mul<Level> for Penalty {
     type Output = Penalty;
 
-    fn mul(self, level: u8) -> Penalty {
+    fn mul(self, level: Level) -> Penalty {
+        let level = level.get() as u16;
         Penalty {
-            circumstance: self.circumstance * level as u16,
-            item: self.item * level as u16,
-            status: self.status * level as u16,
-            untyped: self.untyped * level as u16,
+            circumstance: self.circumstance * level,
+            item: self.item * level,
+            status: self.status * level,
+            untyped: self.untyped * level,
         }
     }
 }
@@ -225,7 +356,8 @@ pub trait IndexedModifier: Copy + Clone + fmt::Debug + std::hash::Hash + Eq {
     type Index: Clone + fmt::Debug + std::hash::Hash + Eq;
 }
 
-#[derive(Clone, Debug, Hash, Eq, PartialEq)]
+#[derive(Clone, Debug, Hash, Eq, PartialEq, Deserialize)]
+#[serde(try_from = "smartstring::alias::String")]
 pub enum Modifies {
     Ability(Ability),
     AC,
@@ -245,6 +377,45 @@ pub enum Modifies {
 
 static_assertions::assert_eq_size!(Modifies, [u8; 40]);
 
+try_from_str!(Modifies);
+
+impl FromStr for Modifies {
+    type Err = Error;
+
+    fn from_str(s: &str) -> Result<Self> {
+        if let Ok(a) = Ability::from_str(s) {
+            return Ok(Self::Ability(a));
+        }
+        if let Ok(a) = ArmorCategory::from_str(s) {
+            return Ok(Self::ArmorCategory(a));
+        }
+        if s.contains("resistance") || s.contains("weakness") {
+            return Err(anyhow!(
+                "TODO: FromStr for Modifies w.r.t. resistances, s = {:?}",
+                s
+            ));
+        }
+        if let Ok(s) = Skill::from_str(s) {
+            return Ok(Self::Skill(s));
+        }
+        if let Ok(w) = WeaponCategory::from_str(s) {
+            return Ok(Self::WeaponCategory(w));
+        }
+        match s {
+            "ac" | "AC" => Ok(Self::AC),
+            "attack" | "Attack" => Ok(Self::Attack),
+            "class dc" | "class DC" | "Class DC" | "ClassDC" => Ok(Self::ClassDC),
+            "fort" | "fortitude" | "fort save" | "fortitude save" => Ok(Self::FortitudeSave),
+            "hp" | "HP" => Ok(Self::HP),
+            "perception" | "Perception" => Ok(Self::Perception),
+            "ref" | "reflex" | "ref save" | "reflex save" => Ok(Self::ReflexSave),
+            "speed" | "Speed" => Ok(Self::Speed),
+            "will" | "will save" => Ok(Self::WillSave),
+            _ => Err(anyhow!("Unknown modifier type {:?}", s)),
+        }
+    }
+}
+
 #[repr(transparent)]
 #[derive(Clone, Debug)]
 pub struct Score<'a> {
@@ -259,15 +430,57 @@ impl fmt::Display for Score<'_> {
 
 #[derive(Clone, Debug)]
 pub struct Modifier {
-    modifies: Modifies,
     bonus: Bonus,
     penalty: Penalty,
 }
 
+impl<'de> Deserialize<'de> for Modifier {
+    fn deserialize<D>(deserializer: D) -> Result<Modifier, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        struct ModifierVisitor;
+
+        impl<'de> Visitor<'de> for ModifierVisitor {
+            type Value = Modifier;
+
+            fn expecting(&self, f: &mut fmt::Formatter) -> fmt::Result {
+                write!(
+                    f,
+                    "a string containing number followed by an optional bonus/penalty type"
+                )
+            }
+
+            fn visit_i16<E: de::Error>(self, value: i16) -> Result<Modifier, E> {
+                if value < 0 {
+                    Ok(Penalty::untyped((-value) as u16).into())
+                } else {
+                    Ok(Bonus::untyped(value).into())
+                }
+            }
+
+            fn visit_str<E: de::Error>(self, v: &str) -> Result<Modifier, E> {
+                if v.starts_with("-") {
+                    match Penalty::from_str(v) {
+                        Ok(p) => Ok(p.into()),
+                        Err(e) => Err(E::custom(e)),
+                    }
+                } else {
+                    match Bonus::from_str(v) {
+                        Ok(b) => Ok(b.into()),
+                        Err(e) => Err(E::custom(e)),
+                    }
+                }
+            }
+        }
+
+        deserializer.deserialize_str(ModifierVisitor)
+    }
+}
+
 impl Modifier {
-    pub fn new(modifies: Modifies) -> Self {
+    pub fn new() -> Self {
         Self {
-            modifies,
             bonus: Bonus::default(),
             penalty: Penalty::default(),
         }
@@ -281,7 +494,6 @@ impl Modifier {
 
     pub fn item_part(&self) -> Self {
         Self {
-            modifies: self.modifies.clone(),
             bonus: Bonus::item(self.bonus.item),
             penalty: Penalty::item(self.penalty.item),
         }
@@ -290,7 +502,6 @@ impl Modifier {
     pub fn proficiency_part(&self) -> (Self, Proficiency) {
         let (p, level) = self.bonus.proficiency;
         let m = Self {
-            modifies: self.modifies.clone(),
             bonus: Bonus::proficiency(p, level),
             penalty: Penalty::none(),
         };
@@ -299,6 +510,30 @@ impl Modifier {
 
     pub fn as_score(&self) -> Score {
         Score { modifier: self }
+    }
+}
+
+impl From<Bonus> for Modifier {
+    fn from(bonus: Bonus) -> Modifier {
+        Modifier {
+            bonus,
+            penalty: Penalty::none(),
+        }
+    }
+}
+
+impl From<Penalty> for Modifier {
+    fn from(penalty: Penalty) -> Modifier {
+        Modifier {
+            bonus: Bonus::none(),
+            penalty,
+        }
+    }
+}
+
+impl From<(Bonus, Penalty)> for Modifier {
+    fn from((bonus, penalty): (Bonus, Penalty)) -> Modifier {
+        Modifier { bonus, penalty }
     }
 }
 
@@ -312,9 +547,7 @@ impl ops::Add<Modifier> for Modifier {
     type Output = Modifier;
 
     fn add(self, other: Modifier) -> Modifier {
-        debug_assert_eq!(self.modifies, other.modifies);
         Self {
-            modifies: self.modifies,
             bonus: self.bonus + other.bonus,
             penalty: self.penalty + other.penalty,
         }
@@ -323,7 +556,6 @@ impl ops::Add<Modifier> for Modifier {
 
 impl ops::AddAssign<Modifier> for Modifier {
     fn add_assign(&mut self, other: Modifier) {
-        debug_assert_eq!(self.modifies, other.modifies);
         self.bonus += other.bonus;
         self.penalty += other.penalty;
     }
@@ -333,16 +565,13 @@ impl ops::Add<Bonus> for Modifier {
     type Output = Modifier;
 
     fn add(self, bonus: Bonus) -> Modifier {
-        Self {
-            bonus: self.bonus + bonus,
-            ..self
-        }
+        self + Modifier::from(bonus)
     }
 }
 
 impl ops::AddAssign<Bonus> for Modifier {
     fn add_assign(&mut self, bonus: Bonus) {
-        self.bonus += bonus;
+        *self += Modifier::from(bonus);
     }
 }
 
@@ -350,16 +579,13 @@ impl ops::Add<Penalty> for Modifier {
     type Output = Modifier;
 
     fn add(self, penalty: Penalty) -> Modifier {
-        Self {
-            penalty: self.penalty + penalty,
-            ..self
-        }
+        self + Modifier::from(penalty)
     }
 }
 
 impl ops::AddAssign<Penalty> for Modifier {
     fn add_assign(&mut self, penalty: Penalty) {
-        self.penalty += penalty;
+        *self += Modifier::from(penalty);
     }
 }
 
@@ -367,7 +593,7 @@ impl ops::Add<Modifier> for Penalty {
     type Output = Modifier;
 
     fn add(self, m: Modifier) -> Modifier {
-        m + self
+        m + Modifier::from(self)
     }
 }
 
@@ -375,7 +601,7 @@ impl ops::Add<Modifier> for Bonus {
     type Output = Modifier;
 
     fn add(self, m: Modifier) -> Modifier {
-        m + self
+        m + Modifier::from(self)
     }
 }
 

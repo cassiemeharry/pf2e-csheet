@@ -1,0 +1,31 @@
+- name: Human
+  size: medium
+  ability_boosts:
+    - free
+    - free
+  starting_languages:
+    - Common
+  flat_bonuses:
+    hp: 8
+    speed: 25
+- name: Werebear
+  size: large
+  ability_boosts:
+    - WIS
+    - STR
+    - CON
+  ability_flaws:
+    - CHA
+  starting_languages:
+    - Common
+    - bear empathy
+  flat_bonuses:
+    hp: 5
+    speed: 25
+    attack: 1
+    ac: 1
+    fort: 1
+    reflex: 1
+    will: 1
+  per_level_bonuses:
+    hp: 5

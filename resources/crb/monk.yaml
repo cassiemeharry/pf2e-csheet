@@ -1,0 +1,441 @@
+- class:
+    name: Monk
+    key ability: [STR, DEX]
+    hp per level: 10
+    perception: trained
+    fort save: expert
+    reflex save: expert
+    will save: expert
+    free skill trained: 4
+    weapon proficiencies:
+      simple: trained
+      unarmed: trained
+    armor proficiencies:
+      unarmored: expert
+    advancement:
+      1:
+        - ancestry
+        - background
+        - initial proficiencies
+        - flurry of blows
+        - monk feat
+        - powerful fist
+      2:
+        - monk feat
+        - skill feat
+      3:
+        - general feat
+        - incredible movement (+10 ft)
+        - mystic strikes
+        - skill increase
+      4:
+        - monk feat
+        - skill feat
+      5:
+        - ability boosts
+        - alertness
+        - ancestry feat
+        - expert strikes
+        - skill increase
+      6:
+        - monk feat
+        - skill feat
+      7:
+        - general feat
+        - incredible movement (+15 ft)
+        - path to perfection
+        - skill increase
+        - weapon specialization
+      8:
+        - monk feat
+        - skill feat
+      9:
+        - ancestry feat
+        - metal strikes
+        - monk expertise
+        - skill increase
+      10:
+        - ability boosts
+        - monk feat
+        - skill feat
+      11:
+        - general feat
+        - incredible movement (+20 ft)
+        - path to perfection
+        - skill increase
+      12:
+        - monk feat
+        - skill feat
+      13:
+        - ancestry feat
+        - graceful mastery
+        - master strikes
+        - skill increase
+      14:
+        - monk feat
+        - skill feat
+      15:
+        - ability boosts
+        - general feat
+        - greater weapon specialization
+        - incredible movement (+25 ft)
+        - skill increase
+        - path to perfection
+      16:
+        - monk feat
+        - skill feat
+      17:
+        - adamantine strikes
+        - ancestry feat
+        - graceful legend
+        - skill increase
+      18:
+        - monk feat
+        - skill feat
+      19:
+        - general feat
+        - incredible movement (+30 ft)
+        - perfected form
+        - skill increase
+      20:
+        - ability boosts
+        - monk feat
+        - skill feat
+    class features:
+      flurry of blows:
+        description: >-
+          You can attack rapidly with fists, feet, elbows, knees, and other
+          unarmed attacks. You gain the Flurry of Blows action.
+        effects:
+            - gain action:
+                name: Flurry of Blows
+                actions: 1
+                traits: ["Flourish", "Monk"]
+                description: >-
+                  Make two unarmed Strikes. If both hit the same creature,
+                  combine their damage for the purpose of resistances and
+                  weaknesses. Apply your multiple attack penalty to the Strikes
+                  normall. As it has the Flourish trait, you can use Flurry of
+                  blows only once per turn.
+      powerful fist:
+        description: >-
+          You know how to wield your fists as deadly weapons. The damage die for
+          your fist changes to 1d6 instead of 1d4. Most people take a -2
+          circumstance penalty when making a leathal attack with nonleathal
+          unarmed attacks, because they find it hard to use their fists with
+          deadly force. You don't take this penalty when making a leathal attack
+          with your fist or any other unarmed attack.
+        effects:
+          - give item:
+              weapon:
+                name: Fist
+                level: 0
+                weapon:
+                  hands: 1
+                  damage die: d6
+                  damage type: B
+                  category: unarmed
+                  group: natural
+      incredible movement:
+        description: >-
+          You move like the wind. You gain a +10-foot status bonus to your Speed
+          whenever you're not wearing armor. The bonus increases by 5 feet every
+          4 levels you have beyond 3rd.
+        modifiers:
+          $speed: distance
+        effects:
+          - bonus:
+              type: status
+              to: speed
+              value: $speed
+            conditions:
+              armor category: unarmored
+      mystic strikes:
+        description: >-
+          Focusing your will into your physical attacks imbues them with
+          mystical energy. Your unarmed attacks become magical, allowing them to
+          get past resistances to non-magical attacks. However, you still need
+          an item such as handwraps of mighty fists to gain an item bonus to
+          attack rolls or to increase your attacks' weapon damage dice.
+        effects:
+          - modify item:
+              name: Fist
+              add: magic
+      alertness:
+        description: >-
+          You remain alert to threats around you. Your proficiency rank for
+          Perception increases to expert.
+        effects:
+          - proficiency:
+              in: perception
+              increase to: expert
+      expert strikes:
+        description: >-
+          You've practiced martial arts and have now surpassed your former
+          skill. Your proficiency ranks for unarmed attacks and simple weapons
+          increases to expert.
+        effects:
+          - proficiency:
+              in: unarmed attacks
+              increase to: expert
+          - proficiency:
+              in: simple weapons
+              increase to: expert
+      path to perfection:
+        description: >-
+          You have progressed along your own path to enlightenment. Choose your
+          Fortitude, Reflex, or Will saving throw. Your proficiency rank for the
+          chosen saving throw increases to master. When you roll a success on
+          the chosen saving throw, you get a critical success instead.
+        modifiers:
+          $save: saving throw
+        effects:
+          - proficiency:
+              in: $save
+              increase to: master
+      weapon specialization:
+        description: >-
+          You've learned how to inflict greater injuries with the weapons you
+          know best. You deal 2 additional damage with weapons and unarmed
+          attacks in which you are an expert. This damage increases to 3 if
+          you're a master, and 4 if you're legendary.
+        effects:
+          - bonus:
+              type: untyped
+              to: weapon damage
+              value: 2
+            conditions:
+              weapon proficiency:
+                exact: expert
+          - bonus:
+              type: untyped
+              to: weapon damage
+              value: 3
+            conditions:
+              weapon proficiency:
+                exact: master
+          - bonus:
+              type: untyped
+              to: weapon damage
+              value: 4
+            conditions:
+              weapon proficiency:
+                exact: legendary
+      metal strikes:
+        description: >-
+          You can adjust your body to make unarmed attacks infused with the
+          mystic energy of rare metals. Your unarmed atacks are treated as cold
+          iron and silver. This allows you to deal more damage to a variety of
+          supernatural creatures, such as demons, devils, and fey.
+        effects:
+          - modify item:
+              name: Fist
+              add: cold iron
+          - modify item:
+              name: Fist
+              add: silver
+      monk expertise:
+        description: >-
+          Your proficiency rank for your monk class DC increases to expert. If
+          you have ki spells, your proficiency rank for spell atacks and spell
+          DCs with the tradition of magic you use for your ki spells increases
+          to expert.
+        modifiers:
+          $ki_spell_tradition:
+            type: spell tradition
+            character: yes
+            optional: yes
+        effects:
+          - proficiency:
+              in: monk class DC
+              increases to: expert
+          - proficiency:
+              in: $ki_spell_tradition
+              increases to: expert
+      graceful master:
+        description: >-
+          You move with perpetual grace in battle, eluding and turning aside
+          blows. Your proficiency rank for unarmed defense increases to master.
+        effects:
+          - proficiency:
+              in: unarmored defense
+              increases to: master
+      master strikes:
+        description: >-
+          You have honed your skill in using your body as a weapon. Your
+          proficiency ranks for unarmed attacks and simple weapons increase to
+          master.
+        effects:
+          - proficiency:
+              in: unarmed attacks
+              increase to: master
+          - proficiency:
+              in: simple weapons
+              increase to: master
+      greater weapon specialization:
+        description: >-
+          Your damage from weapon specialization increases to 4 with weapons and
+          unarmed attacks you're an expert, 6 if you're a master, and 8 if
+          you're legendary.
+        effects:
+          # Note: these stack with the previous values to reach the numbers listed
+          # in the description.
+          - bonus:
+              type: untyped
+              to: weapon damage
+              value: 2
+            conditions:
+              weapon proficiency:
+                exact: expert
+          - bonus:
+              type: untyped
+              to: weapon damage
+              value: 3
+            conditions:
+              weapon proficiency:
+                exact: master
+          - bonus:
+              type: untyped
+              to: weapon damage
+              value: 4
+            conditions:
+              weapon proficiency:
+                exact: legendary
+      adamantine strikes:
+        description: >-
+          When yhou focus your will into your limbs, your blows are as
+          unyielding as the hardest of metals. Your unarmed attacks are treated
+          as adamantine.
+        effects:
+          - modify item:
+              name: Fist
+              add: adamantine
+      graceful legend:
+        description: >-
+          Your sublime movement grants you unparalleled protection and offense.
+          Your proficiency rank for unarmored defense increases to legendary,
+          and your proficiency rank for your monk class DC increases to master.
+          If you have ki spells, your proficiency rank for spell attack rolls
+          and spell DCs with the tradition of magic you use for ki spells
+          increases to master.
+        modifiers:
+          $ki_spell_tradition:
+            type: spell tradition
+            from: class (Monk)
+            optional: yes
+        effects:
+          - proficiency:
+              in: unarmored defense
+              increase to: legendary
+          - proficiency:
+              in: monk class DC
+              increases to: master
+          - proficiency:
+              in: $ki_spell_tradition
+              increases to: master
+      perfected form:
+        description: >-
+          You have purged incompetence from your techniques. On your first
+          Strike of your turn, if you roll lower than a 10, you can treat the
+          attack roll as a 10. This is a fortune effect.
+- feat:
+    name: Crane Stance
+    level: 1
+    traits: [monk, stance]
+    conditions:
+      armor category: unarmored
+    action:
+      actions: 1
+    description: >-
+      You enter the stance of a crane, holding your arms in an imitation of a
+      crane's wings and using flowing, defensive motions. You gain a +1
+      circumstance bonus to AC, but the only Strikes you can make are crane wing
+      attacks. These deal 1d6 bludgeoning damage; are in the brawling group; and
+      have the agile, finesse, nonleathal, and unarmed traits.
+
+      While in Crane Stance, reduce the DC for High Jump and Long Jump by 5, and
+      when you Leap, you can move an additional 5 feet horizontally or 2 feet
+      vertically.
+- feat:
+    name: Dragon Stance
+    level: 1
+    traits: [monk, stance]
+    conditions:
+      armor category: unarmored
+    action:
+      actions: 1
+    description: >-
+      You enter the stance of a dragon and make powerful leg strikes like a
+      lashing dragon's tail. You can make dragon tail attacks that deal 1d10
+      bludgeoning damage. They are in the brawling group and have the backswing,
+      nonleathal, and unarmed traits.
+
+      While in Dragon Stance, you can ignore the first square of difficult
+      terrain while Striding.
+- feat:
+    name: ki rush
+    traits: [monk]
+    description: >-
+      You can use ki to move with extraordinary speed and make yourself harder
+      to hit. You gain the *ki rush* spell and a focus pool of 1 focus point.
+    effects:
+      - gain spell: ki rush
+      - gain focus pool
+- feat:
+    name: ki strike
+    traits: [monk]
+    description: >-
+      Your study the flow of mystical energy allows you to harness it into your
+      physical strikes. You gain the *ki strike* ki spell and a focus pool of 1
+      Focus point.
+    effects:
+      - gain spell: ki strike
+      - gain focus pool
+- feat:
+    name: monastic weaponry
+    traits: [monk]
+    description: >-
+      You have trained with the traditional weaponry of your monastery or
+      school. You gain access to uncommon weapons that have the monk trait and
+      become trained in simple and martial monk weapons. When your proficiency
+      rank for unarmed attacks increases to expert or master, your proficiency
+      rank for these weapons increase to expert or master as well.
+
+      You can use melee monk weapons with any of your monk feats and monk
+      abilities that normally require unarmed attacks, though not if the feat or
+      ability requires you to use a single specific type of attack, such as
+      Crane Stance.
+    effects:
+      - proficiency:
+          in: simple weapons
+          increases to: trained
+          conditions: &monastic_weaponry_cond_base
+            item trait: monk
+      - proficiency:
+          in: martial weapons
+          increases to: trained
+          conditions: *monastic_weaponry_cond_base
+      - proficiency:
+          in: simple weapons
+          increases to: expert
+          conditions: &monastic_weaponry_cond_expert
+            item trait: monk
+            proficiency:
+              in: unarmed attacks
+              at least: expert
+      - proficiency:
+          in: martial weapons
+          increases to: expert
+          conditions: *monastic_weaponry_cond_expert
+      - proficiency:
+          in: simple weapons
+          increases to: master
+          conditions: &monastic_weaponry_cond_master
+            item trait: monk
+            proficiency:
+              in: unarmed attacks
+              at least: master
+      - proficiency:
+          in: martial weapons
+          increases to: master
+          conditions: *monastic_weaponry_cond_master

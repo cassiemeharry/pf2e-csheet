@@ -1,0 +1,20 @@
+- name: Champion
+  key ability: [STR, DEX]
+  hp per level: 10
+  perception: trained
+  fort save: expert
+  reflex save: trained
+  will save: expert
+  trained skill options:
+    - Religion
+    - null
+  free skill trained: 3
+  weapon proficiencies:
+    simple: trained
+    martial: trained
+    unarmed: trained
+  armor proficiencies:
+    light: trained
+    medium: trained
+    heavy: trained
+    unarmored: trained

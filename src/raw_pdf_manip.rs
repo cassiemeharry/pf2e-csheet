@@ -12,11 +12,12 @@ use std::{
 
 use crate::{
     pdf::{CheckboxID, PDFOutput, SkillSlot, TextID, WeaponSlot},
-    DamageType, Proficiency as P, WeaponCategory,
+    resources::WeaponCategory,
+    stats::{DamageType, Proficiency as P},
 };
 
 const PLAYER_FONT_NAME: &'static [u8] = b"PLAYER_FONT";
-static PDF_BYTES: &'static [u8] = include_bytes!("../PZO2101-CharacterSheet-Color.pdf");
+static PDF_BYTES: &'static [u8] = include_bytes!("../resources/PZO2101-CharacterSheet-Color.pdf");
 // static PDF_BYTES: &'static [u8] = include_bytes!("../PZO2101-CharacterSheet-BW.pdf");
 
 #[derive(Clone, Debug)]
@@ -263,7 +264,7 @@ impl PDF {
             T::ShieldHardness => (1, (335, 592), (30, 11), 12, Center),
             T::ShieldMaxHP => (1, (373, 592), (19, 11), 12, Right),
             T::ShieldBreakThreshold => (1, (397, 592), (10, 11), 12, Left),
-            T::ShieldCurrentHP => (1, (411, 592), (30, 11), 12, Center),
+            // T::ShieldCurrentHP => (1, (411, 592), (30, 11), 12, Center),
             T::FortSaveTotal => (1, (231, 540), (34, 15), 16, Center),
             T::FortSaveCONBonus => (1, (219, 516), (26, 11), 12, Center),
             T::FortSaveProficiency => (1, (250, 516), (26, 11), 12, Center),
@@ -693,7 +694,7 @@ impl TextLayout {
     }
 }
 
-static FONT_DATA_TTF: &'static [u8] = include_bytes!("../LesliesHand.ttf");
+static FONT_DATA_TTF: &'static [u8] = include_bytes!("../resources/LesliesHand.ttf");
 
 lazy_static! {
     static ref FONT: rusttype::Font<'static> =

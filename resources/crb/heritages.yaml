@@ -1,0 +1,28 @@
+- name: Half-elf
+  ancestry: Human
+  description: >-
+    Either one of your parents was an elf, or one or both were half-elves. You
+    have pointed ears and other telltale signs of elf heritage. You cain the elf
+    trait and low-light vision. In addition, you can select elf, half-elf, and
+    human feats when you gain an ancestry feat.
+- name: Half-orc
+  ancestry: Human
+  description: >-
+    Either one of your parents was an orc, or one or both were half-elves. You
+    have a green tinge to your skin and other indicators of orc heritage. You
+    cain the orc trait and low-light vision. In addition, you can select orc,
+    half-orc, and human feats when you gain an ancestry feat.
+- name: Skilled Heritage
+  ancestry: Human
+  description: >-
+    Your ingenuity allows you to train in a wide variety of skills. You become
+    trained in one skill of your choice. At 5th level, you become an expert in
+    the chosen skill.
+- name: Versatile Heritage
+  ancestry: Human
+  description: >-
+    Humanity's versatility and ambition have fueled its ascendance to be the
+    most common ancestry in most nations throughout the world. Select a general
+    feat of yoru choice for which you meet the prerequisites (as with your
+    ancestry feat, you can select this general feat at any point during
+    character creation).

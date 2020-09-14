@@ -1,0 +1,24 @@
+- name: Studded Leather
+  level: 0
+  bulk: 1
+  price: 3gp
+  bonuses:
+    AC: 2
+  armor:
+    category: light
+    dex_cap: 3
+    check_penalty: 1
+    min_strength: 12
+- name: Longbow
+  level: 0
+  bulk: 2
+  price: 6 gp
+  weapon:
+    hands: 1
+    damage_die: d8
+    damage_type: P
+    category: martial
+    group: bow
+    traits:
+      - deadly d8
+      - volley 30

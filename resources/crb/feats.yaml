@@ -1,0 +1,103 @@
+- name: Additional Lore
+  level: 1
+  categories: [General, Skill]
+  prereqs: trained in Lore
+  description: >-
+    Your knowledge has expanded to encompass a new field. Choose an additional
+    Lore skill subcategory. You become trained in it. At 3rd, 7th, and 15th
+    levels, you can an additional skill increase you can apply only to the
+    chosen Lore subcategory.
+
+    Special: You can select this feat more than once. Each time you must select
+    a new subcategory of Lore and you gain the additional skill increases to
+    that subcategory at the listed levels.
+  questions:
+    - label: New Lore subcategory
+      tag: lore_subcategory
+      lore_topic:
+        only_new: true
+- name: Adopted Ancestry
+  level: 1
+  categories: [General]
+  description: >-
+    You're fully immersed in another ancestry's culture and traditions, whether
+    born into them, earned through rite of passage, or bonded through a deep
+    friendship or romance. Choose a common ancestry. You can select ancestry
+    feats from the ancestry you chose, in addition to your character's own
+    ancestry, as long as the ancestry feats don't require any physiological
+    feature you lack, as determined by the GM.
+  questions:
+    - label: New Ancestry
+      tag: ancestry
+      ancestry:
+- name: Alchemical Crafting
+  level: 1
+  categories: [General, Skill]
+  prereqs: trained in Crafting
+  description: >-
+    You can use the Craft activity to create alchemical items. When you select
+    this feat, you immediately add the formulas for four common 1st-level
+    alchemical items to your formula book.
+  questions:
+    - label: Alchemical Formula \#1
+      tag: formula_1
+      item_formula:
+        level: 1
+    - label: Alchemical Formula \#2
+      tag: formula_2
+      item_formula:
+        level: 1
+    - label: Alchemical Formula \#3
+      tag: formula_3
+      item_formula:
+        level: 1
+    - label: Alchemical Formula \#4
+      tag: formula_4
+      item_formula:
+        level: 1
+- name: Ancestral Paragon
+  level: 3
+  categories: [General]
+  description: >-
+    Whether through instinct, study, or magic, you feel a deeper connection to
+    your ancestry. You gain a 1st-level ancestry feat.
+  questions:
+    - label: Ancestry Feat
+      tag: feat
+      feat: [Ancestry]
+- name: Arcane Sense
+  level: 1
+  categories: [General, Skill]
+  prereqs: trained in Arcana
+  description: >-
+    Your study of magic allows you to instincitvely sense it presence. You can
+    cast 1st-level detect magic at will as an arcane innate spell. If you're a
+    master in Arcana, the spell is heightened to 3rd level; if you're legendary,
+    it is heightened to 4th level.
+- name: Armor Proficiency
+  level: 1
+  categories: [General]
+  description: >-
+    You beome trained in light armor. If you already were trained in light
+    armor, you gain training in medium armor. I fyou were trained in both, you
+    become trained in heavy armor.
+
+    Special: You can select this feat more than once. Each time, you become
+    trained in the next type of armor above.
+- name: Assurance
+  level: 1
+  categories: [Fortune, General, Skill]
+  prereqs: trained in at least one skill
+  description: >-
+    Even in the worst circumstances, you can perform basic tasks. Choose a skill
+    you're trained in. You can forgo rolling a skill check for that skill to
+    instead receive a result of 10 + your proficiency bonus (do not apply any
+    other bonuses, penalties, or modifiers).
+
+    Special: You can select this feat multiple times. Each time, choose a
+    different skill and gain the benefits for that skill.
+  questions:
+    - label: Skill
+      tag: skill
+      skill:
+        min_proficiency: trained

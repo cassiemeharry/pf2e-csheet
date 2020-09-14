@@ -1,0 +1,36 @@
+---
+name: Nadia Redmane
+player_name: Cassie
+ancestry: Werebear
+heritage: Human
+background: Nomad
+class: Champion
+class_key_ability: DEX
+alignment: LG
+deity: Erastil
+traits:
+  - Human
+  - Humanoid
+  - Werecreature
+xp: 0
+level: 1
+skill_proficiencies:
+  diplomacy: trained
+  nature: trained
+  religion: trained
+  survival: trained
+  "lore (Forest)": trained
+equipped_items:
+  - Studded Leather
+  - Longbow
+  - name: Claws
+    level: 0
+    weapon:
+      hands: 1
+      damage_die: d8
+      damage_type: S
+      category: simple
+      group: natural
+      traits:
+        - agile
+...

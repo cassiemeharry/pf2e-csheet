@@ -1,7 +1,11 @@
 use anyhow::Result;
 use std::fmt;
 
-use crate::{bonuses::Modifier, DamageType, Proficiency as P, WeaponCategory};
+use crate::{
+    bonuses::Modifier,
+    resources::WeaponCategory,
+    stats::{DamageType, Proficiency as P},
+};
 
 #[derive(Copy, Clone, Debug, Hash, Eq, PartialEq)]
 pub enum SkillSlot {
@@ -23,15 +27,6 @@ pub enum SkillSlot {
     Stealth,
     Survival,
     Thievery,
-}
-
-impl SkillSlot {
-    pub fn affected_by_armor_penalty(self) -> bool {
-        match self {
-            Self::Acrobatics | Self::Athletics | Self::Stealth | Self::Thievery => true,
-            _ => false,
-        }
-    }
 }
 
 #[derive(Copy, Clone, Debug, Hash, Eq, PartialEq)]
@@ -85,7 +80,7 @@ pub enum TextID {
     ShieldHardness,
     ShieldMaxHP,
     ShieldBreakThreshold,
-    ShieldCurrentHP,
+    // ShieldCurrentHP,
     FortSaveTotal,
     FortSaveCONBonus,
     FortSaveProficiency,
@@ -262,7 +257,12 @@ pub trait PDFOutput: Sized {
 
     fn set_check_box(&mut self, id: CheckboxID, checked: bool) -> Result<()>;
 
-    fn set_proficiency(&mut self, fields: ProficiencyFields, modifier: Modifier) -> Result<()> {
+    fn set_proficiency(
+        &mut self,
+        fields: ProficiencyFields,
+        modifier: impl Into<Modifier>,
+    ) -> Result<()> {
+        let modifier = modifier.into();
         let (bonus, p) = modifier.proficiency_part();
         let ids = fields.ids();
         if let Some(n) = ids.number {
