@@ -158,9 +158,9 @@
           an item such as handwraps of mighty fists to gain an item bonus to
           attack rolls or to increase your attacks' weapon damage dice.
         effects:
-          - modify item:
-              name: Fist
-              add: magic
+          - add trait:
+              to: Fist
+              trait: magic
       alertness:
         description: >-
           You remain alert to threats around you. Your proficiency rank for
@@ -243,7 +243,7 @@
         modifiers:
           $ki_spell_tradition:
             type: spell tradition
-            character: yes
+            from: class (Monk)
             optional: yes
         effects:
           - proficiency:

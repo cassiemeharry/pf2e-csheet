@@ -77,15 +77,15 @@ peg::parser! {
             / ( "P" / "piercing" ) { DamageType::P }
             / ( "S" / "slashing" ) { DamageType::S }
 
-        pub rule feat_prereq() -> feat::Prereq
-            = ( p:proficiency_level() ws() "in" ws() s:skill_choice() { feat::Prereq::SkillProf(s, p) })
-            / ( a:ability() ws() m:unsigned()
-                {?
-                 match m.try_into() {
-                     Ok(m) => Ok(feat::Prereq::MinAbilityScore(a, m)),
-                     Err(_) => Err("Minimum ability score value is too large"),
-                 }
-                })
+        // pub rule feat_prereq() -> feat::Prereq
+        //     = ( p:proficiency_level() ws() "in" ws() s:skill_choice() { feat::Prereq::SkillProf(s, p) })
+        //     / ( a:ability() ws() m:unsigned()
+        //         {?
+        //          match m.try_into() {
+        //              Ok(m) => Ok(feat::Prereq::MinAbilityScore(a, m)),
+        //              Err(_) => Err("Minimum ability score value is too large"),
+        //          }
+        //         })
 
         pub rule proficiency_level() -> Proficiency
             = ( "untrained" / "Untrained" ) { Proficiency::Untrained }
@@ -115,52 +115,6 @@ peg::parser! {
             / ( "stealth" / "Stealth" ) { Skill::Stealth }
             / ( "survival" / "Survival" ) { Skill::Survival }
             / ( "thievery" / "Thievery" ) { Skill::Thievery }
-
-        pub rule skill_choice() -> feat::SkillChoice
-            = ( "any skill" / "at least one skill" ) { feat::SkillChoice::Any }
-            / s:skill() { feat::SkillChoice::Single(s) }
-            / ( "lore" / "Lore" ) { feat::SkillChoice::AnyLore }
-
-        pub rule weapon_die() -> WeaponDie
-            = ( "d4" / "D4" ) { WeaponDie::D4 }
-            / ( "d6" / "D6" ) { WeaponDie::D6 }
-            / ( "d8" / "D8" ) { WeaponDie::D8 }
-            / ( "d10" / "D10" ) { WeaponDie::D10 }
-            / ( "d12" / "D12" ) { WeaponDie::D12 }
-
-        pub rule weapon_trait() -> WeaponTrait
-            = "agile" { WeaponTrait::Agile }
-            / "attached" { WeaponTrait::Attached }
-            / "backstabber" { WeaponTrait::Backstabber }
-            / "backswing" { WeaponTrait::Backswing }
-            / "deadly " d:weapon_die() { WeaponTrait::Deadly(d) }
-            / "disarm" { WeaponTrait::Disarm }
-            / "dwarf" { WeaponTrait::Dwarf }
-            / "elf" { WeaponTrait::Elf }
-            / "fatal " d:weapon_die() { WeaponTrait::Fatal(d) }
-            / "finesse" { WeaponTrait::Finesse }
-            / "forceful" { WeaponTrait::Forceful }
-            / "free-hand" { WeaponTrait::FreeHand }
-            / "gnome" { WeaponTrait::Gnome }
-            / "goblin" { WeaponTrait::Goblin }
-            / "grapple" { WeaponTrait::Grapple }
-            / "halfling" { WeaponTrait::Halfling }
-            / "jousting" { WeaponTrait::Jousting }
-            / "monk" { WeaponTrait::Monk }
-            / "nonleathal" { WeaponTrait::Nonleathal }
-            / "orc" { WeaponTrait::Orc }
-            / "parry" { WeaponTrait::Parry }
-            / "propulsive" { WeaponTrait::Propulsive }
-            / "reach" { WeaponTrait::Reach }
-            / "shove" { WeaponTrait::Shove }
-            / "sweep" { WeaponTrait::Sweep }
-            / "thrown" { WeaponTrait::Thrown }
-            / "trip" { WeaponTrait::Trip }
-            / "twin" { WeaponTrait::Twin }
-            / "two-hand " d:weapon_die() { WeaponTrait::TwoHand(d) }
-            / "unarmed" { WeaponTrait::Unarmed }
-            / "versatile " dt:damage_type() { WeaponTrait::Versatile(dt) }
-            / "volley " r:range() { WeaponTrait::Volley(r) }
     }
 }
 

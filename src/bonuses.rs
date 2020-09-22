@@ -7,13 +7,12 @@ use smartstring::alias::String;
 use std::{collections::HashSet, fmt, ops, str::FromStr};
 
 use crate::{
-    resources::{ArmorCategory, Character, WeaponCategory},
+    character::Character,
     stats::{Ability, Level, Proficiency, Skill},
     try_from_str,
 };
 
-#[derive(Copy, Clone, Debug, Default, Deserialize)]
-#[serde(try_from = "smartstring::alias::String")]
+#[derive(Copy, Clone, Debug, Default, Deserialize, Eq, PartialEq)]
 pub struct Bonus {
     circumstance: u16,
     item: u16,
@@ -158,7 +157,7 @@ impl ops::Mul<Level> for Bonus {
     }
 }
 
-#[derive(Copy, Clone, Debug, Default)]
+#[derive(Copy, Clone, Debug, Default, Eq, PartialEq)]
 pub struct Penalty {
     circumstance: u16,
     item: u16,
@@ -346,75 +345,76 @@ impl ops::Mul<Level> for Penalty {
     }
 }
 
-/// TODO: I'd like to be generic over things like skills, abilities,
-/// and resistances, where it would be impractical to scan over all
-/// possibilities (especially when they include things like strings,
-/// which could be (almost) infinitely long). This `IndexedModifier`
-/// trait is sort of what I'm aiming at, but I don't think this
-/// implementation is actually usable.
-pub trait IndexedModifier: Copy + Clone + fmt::Debug + std::hash::Hash + Eq {
-    type Index: Clone + fmt::Debug + std::hash::Hash + Eq;
-}
+// /// TODO: I'd like to be generic over things like skills, abilities,
+// /// and resistances, where it would be impractical to scan over all
+// /// possibilities (especially when they include things like strings,
+// /// which could be (almost) infinitely long). This `IndexedModifier`
+// /// trait is sort of what I'm aiming at, but I don't think this
+// /// implementation is actually usable.
+// pub trait IndexedModifier: Copy + Clone + fmt::Debug + std::hash::Hash + Eq {
+//     type Index: Clone + fmt::Debug + std::hash::Hash + Eq;
+// }
 
-#[derive(Clone, Debug, Hash, Eq, PartialEq, Deserialize)]
-#[serde(try_from = "smartstring::alias::String")]
-pub enum Modifies {
-    Ability(Ability),
-    AC,
-    ArmorCategory(ArmorCategory),
-    Attack,
-    ClassDC,
-    FortitudeSave,
-    HP,
-    Perception,
-    ReflexSave,
-    Resistance(String),
-    Skill(Skill),
-    Speed,
-    WillSave,
-    WeaponCategory(WeaponCategory),
-}
+// #[derive(Clone, Debug, Hash, Eq, PartialEq, Deserialize)]
+// #[serde(try_from = "smartstring::alias::String")]
+// pub enum Modifies {
+//     Ability(Ability),
+//     AC,
+//     ArmorCategory(ArmorCategory),
+//     Attack,
+//     ClassDC,
+//     FortitudeSave,
+//     HP,
+//     Other(String),
+//     Perception,
+//     ReflexSave,
+//     Resistance(String),
+//     Skill(Skill),
+//     Speed,
+//     WillSave,
+//     WeaponCategory(WeaponCategory),
+// }
 
-static_assertions::assert_eq_size!(Modifies, [u8; 40]);
+// static_assertions::assert_eq_size!(Modifies, [u8; 40]);
 
-try_from_str!(Modifies);
+// try_from_str!(Modifies);
 
-impl FromStr for Modifies {
-    type Err = Error;
+// impl FromStr for Modifies {
+//     type Err = Error;
 
-    fn from_str(s: &str) -> Result<Self> {
-        if let Ok(a) = Ability::from_str(s) {
-            return Ok(Self::Ability(a));
-        }
-        if let Ok(a) = ArmorCategory::from_str(s) {
-            return Ok(Self::ArmorCategory(a));
-        }
-        if s.contains("resistance") || s.contains("weakness") {
-            return Err(anyhow!(
-                "TODO: FromStr for Modifies w.r.t. resistances, s = {:?}",
-                s
-            ));
-        }
-        if let Ok(s) = Skill::from_str(s) {
-            return Ok(Self::Skill(s));
-        }
-        if let Ok(w) = WeaponCategory::from_str(s) {
-            return Ok(Self::WeaponCategory(w));
-        }
-        match s {
-            "ac" | "AC" => Ok(Self::AC),
-            "attack" | "Attack" => Ok(Self::Attack),
-            "class dc" | "class DC" | "Class DC" | "ClassDC" => Ok(Self::ClassDC),
-            "fort" | "fortitude" | "fort save" | "fortitude save" => Ok(Self::FortitudeSave),
-            "hp" | "HP" => Ok(Self::HP),
-            "perception" | "Perception" => Ok(Self::Perception),
-            "ref" | "reflex" | "ref save" | "reflex save" => Ok(Self::ReflexSave),
-            "speed" | "Speed" => Ok(Self::Speed),
-            "will" | "will save" => Ok(Self::WillSave),
-            _ => Err(anyhow!("Unknown modifier type {:?}", s)),
-        }
-    }
-}
+//     fn from_str(s: &str) -> Result<Self> {
+//         if let Ok(a) = Ability::from_str(s) {
+//             return Ok(Self::Ability(a));
+//         }
+//         if let Ok(a) = ArmorCategory::from_str(s) {
+//             return Ok(Self::ArmorCategory(a));
+//         }
+//         if s.contains("resistance") || s.contains("weakness") {
+//             return Err(anyhow!(
+//                 "TODO: FromStr for Modifies w.r.t. resistances, s = {:?}",
+//                 s
+//             ));
+//         }
+//         if let Ok(s) = Skill::from_str(s) {
+//             return Ok(Self::Skill(s));
+//         }
+//         if let Ok(w) = WeaponCategory::from_str(s) {
+//             return Ok(Self::WeaponCategory(w));
+//         }
+//         match s {
+//             "ac" | "AC" => Ok(Self::AC),
+//             "attack" | "Attack" => Ok(Self::Attack),
+//             "class dc" | "class DC" | "Class DC" | "ClassDC" => Ok(Self::ClassDC),
+//             "fort" | "fortitude" | "fort save" | "fortitude save" => Ok(Self::FortitudeSave),
+//             "hp" | "HP" => Ok(Self::HP),
+//             "perception" | "Perception" => Ok(Self::Perception),
+//             "ref" | "reflex" | "ref save" | "reflex save" => Ok(Self::ReflexSave),
+//             "speed" | "Speed" => Ok(Self::Speed),
+//             "will" | "will save" => Ok(Self::WillSave),
+//             _ => Err(anyhow!("Unknown modifier type {:?}", s)),
+//         }
+//     }
+// }
 
 #[repr(transparent)]
 #[derive(Clone, Debug)]
@@ -428,7 +428,7 @@ impl fmt::Display for Score<'_> {
     }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Modifier {
     bonus: Bonus,
     penalty: Penalty,
@@ -460,17 +460,7 @@ impl<'de> Deserialize<'de> for Modifier {
             }
 
             fn visit_str<E: de::Error>(self, v: &str) -> Result<Modifier, E> {
-                if v.starts_with("-") {
-                    match Penalty::from_str(v) {
-                        Ok(p) => Ok(p.into()),
-                        Err(e) => Err(E::custom(e)),
-                    }
-                } else {
-                    match Bonus::from_str(v) {
-                        Ok(b) => Ok(b.into()),
-                        Err(e) => Err(E::custom(e)),
-                    }
-                }
+                Modifier::from_str(v).map_err(E::custom)
             }
         }
 
@@ -508,8 +498,30 @@ impl Modifier {
         (m, p)
     }
 
+    pub fn bonus_part(&self) -> Bonus {
+        self.bonus
+    }
+
+    pub fn penalty_part(&self) -> Penalty {
+        self.penalty
+    }
+
     pub fn as_score(&self) -> Score {
         Score { modifier: self }
+    }
+}
+
+impl FromStr for Modifier {
+    type Err = Error;
+
+    fn from_str(s: &str) -> Result<Modifier> {
+        if s.starts_with("-") {
+            let penalty = Penalty::from_str(s)?;
+            Ok(penalty.into())
+        } else {
+            let bonus = Bonus::from_str(s)?;
+            Ok(bonus.into())
+        }
     }
 }
 
@@ -625,7 +637,7 @@ impl ops::AddAssign<(Bonus, Penalty)> for Modifier {
 }
 
 pub trait HasModifiers {
-    fn get_modifier(&self, character: &Character, modifier: Modifies) -> Modifier;
+    fn get_modifier(&self, character: &Character, modifier: &str) -> Modifier;
 
     fn get_modified_abilities(&self, character: &Character) -> HashSet<Ability> {
         let _ = character;

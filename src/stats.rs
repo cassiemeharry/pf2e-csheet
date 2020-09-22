@@ -4,11 +4,7 @@ use serde::Deserialize;
 use smartstring::alias::String;
 use std::{fmt, str::FromStr};
 
-use crate::{
-    bonuses::Bonus,
-    resources::{ArmorCategory, Character, WeaponCategory},
-    try_from_str,
-};
+use crate::{bonuses::Bonus, character::Character, try_from_str};
 
 #[derive(Copy, Clone, Debug, Eq, Hash, PartialEq, Ord, PartialOrd, Deserialize)]
 #[serde(try_from = "smartstring::alias::String")]
@@ -351,13 +347,6 @@ impl fmt::Display for Level {
     }
 }
 
-#[derive(Clone, Debug, Hash, Eq, PartialEq)]
-pub enum ProficiencyCategory {
-    Armor(ArmorCategory),
-    Perception,
-    Weapon(WeaponCategory),
-}
-
 #[derive(Copy, Clone, Debug, Hash, Eq, PartialEq, Ord, PartialOrd, Deserialize)]
 #[serde(try_from = "smartstring::alias::String")]
 pub enum Proficiency {
@@ -399,7 +388,7 @@ impl Proficiency {
 }
 
 pub trait ProvidesProficiency {
-    fn get_proficiency_level(&self, character: &Character, p: &ProficiencyCategory) -> Proficiency;
+    fn get_proficiency_level(&self, character: &Character, p: &str) -> Proficiency;
 }
 
 #[derive(Clone, Debug, Hash, Eq, PartialEq, Deserialize)]
@@ -503,6 +492,103 @@ impl fmt::Display for Range {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{} ft.", self.0)
     }
+}
+
+#[derive(Copy, Clone, Debug, Hash, Eq, PartialEq, Ord, PartialOrd, Deserialize)]
+#[serde(try_from = "smartstring::alias::String")]
+pub enum Die {
+    D4,
+    D6,
+    D8,
+    D10,
+    D12,
+    D20,
+}
+
+impl fmt::Display for Die {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            Self::D4 => write!(f, "d4"),
+            Self::D6 => write!(f, "d6"),
+            Self::D8 => write!(f, "d8"),
+            Self::D10 => write!(f, "d10"),
+            Self::D12 => write!(f, "d12"),
+            Self::D20 => write!(f, "d20"),
+        }
+    }
+}
+
+try_from_str!(Die);
+
+impl FromStr for Die {
+    type Err = Error;
+
+    fn from_str(s: &str) -> Result<Self> {
+        match s {
+            "d4" => Ok(Self::D4),
+            "d6" => Ok(Self::D6),
+            "d8" => Ok(Self::D8),
+            "d10" => Ok(Self::D10),
+            "d12" => Ok(Self::D12),
+            "d20" => Ok(Self::D20),
+            _ => Err(anyhow!("Unknown die size {:?}", s)),
+        }
+    }
+}
+
+#[derive(Copy, Clone, Debug, Hash, Eq, PartialEq, Deserialize)]
+#[serde(try_from = "smartstring::alias::String")]
+pub struct DieRoll {
+    pub count: u16,
+    pub size: Die,
+}
+
+impl fmt::Display for DieRoll {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}{}", self.count, self.size)
+    }
+}
+
+try_from_str!(DieRoll);
+
+impl FromStr for DieRoll {
+    type Err = Error;
+
+    fn from_str(s: &str) -> Result<Self> {
+        let mut count_end = 0;
+        for (i, c) in s.char_indices() {
+            count_end = i;
+            if !c.is_digit(10) {
+                break;
+            }
+        }
+        if count_end == 0 {
+            return Err(anyhow!("Expected a number when parsing a die roll"));
+        }
+
+        let count = s[..count_end].parse()?;
+        let size = s[count_end..].parse()?;
+        Ok(DieRoll { count, size })
+    }
+}
+
+#[test]
+fn test_parse_die_roll() {
+    assert_eq!(
+        "1d20".parse::<DieRoll>().unwrap(),
+        DieRoll {
+            count: 1,
+            size: Die::D20
+        }
+    );
+    assert_eq!(
+        "10d6".parse::<DieRoll>().unwrap(),
+        DieRoll {
+            count: 10,
+            size: Die::D6
+        }
+    );
+    assert!("-10d6".parse::<DieRoll>().is_err());
 }
 
 #[derive(Copy, Clone, Debug, Hash, Eq, PartialEq, Deserialize)]
