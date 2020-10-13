@@ -1,0 +1,56 @@
+[package]
+name = "pf2e-csheet-frontend"
+version = "0.1.0"
+authors = ["Cassie Meharry <cassie@prophetessof.tech>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+# anyhow = "1"
+async-trait = "0.1"
+console_log = "0.2"
+futures = "*"
+js-sys = "*"
+lazy_static = "1"
+log = "0.4"
+pf2e-csheet-shared = { features = ["wasm"], path = "../pf2e-csheet-shared" }
+serde_json = "1"
+thiserror = "1"
+uuid = { features = ["serde", "v4", "wasm-bindgen"], version = "0.8" }
+wasm-bindgen = { features = ["serde-serialize"], version = "=0.2.68" }
+wasm-bindgen-futures = "*"
+yewtil = "0.3"
+
+[dependencies.serde]
+features = ["derive", "rc"]
+version = "1"
+
+[dependencies.smartstring]
+features = ["serde"]
+version = "0.2"
+
+[dependencies.url]
+features = ["serde"]
+version = "2"
+
+[dependencies.web-sys]
+default-features = false
+features = [
+    "Headers",
+    "Location",
+    "Request",
+    "RequestInit",
+    "RequestMode",
+    "Response",
+    "Storage",
+    "Window",
+]
+version = "0.3"
+
+[dependencies.yew]
+features = ["web_sys"]
+version = "0.17"

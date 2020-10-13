@@ -1,0 +1,46 @@
+[package]
+name = "pf2e-csheet-backend"
+version = "0.1.0"
+authors = ["Cassie Meharry <cassie@prophetessof.tech>"]
+edition = "2018"
+
+[dependencies]
+anyhow = "1"
+async-trait = "0.1"
+futures = "*"
+lazy_static = "*"
+log = "0.4"
+# lopdf = "0.25"
+owning_ref = "0.4"
+pf2e-csheet-shared = { path = "../pf2e-csheet-shared", features = ["rocket"] }
+pretty_env_logger = "0.4"
+serde_derive = "1"
+serde_json = "*"
+serde_with = "^1.4"
+serde_yaml = "0.8"
+static_assertions = "1"
+# typemap = "0.3"
+
+[dependencies.rocket]
+git = "https://github.com/SergioBenitez/Rocket.git"
+rev = "1369dc47a357567ec3d3d711e318248dabd4b7f7"
+
+[dependencies.rocket_contrib]
+git = "https://github.com/SergioBenitez/Rocket.git"
+rev = "1369dc47a357567ec3d3d711e318248dabd4b7f7"
+
+[dependencies.serde]
+features = ["derive", "rc"]
+version = "1"
+
+[dependencies.smallvec]
+features = ["serde", "write", "const_generics"]
+version = "1"
+
+[dependencies.smartstring]
+features = ["serde"]
+version = "0.2"
+
+[dependencies.tokio]
+features = ["full"]
+version = "*"

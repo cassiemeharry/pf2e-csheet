@@ -1,2 +1,5 @@
 /*.pdf
+/aon2e-scraper/aon2e-cache
+/resources
+/static/pf2e_csheet_frontend*
 /target

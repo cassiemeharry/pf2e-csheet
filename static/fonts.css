@@ -1,0 +1,100 @@
+/* Junction */
+@font-face {
+    font-family: "Junction";
+    src: url("./fonts/junction-regular.woff") format("woff");
+    font-weight: normal;
+}
+@font-face {
+    font-family: "Junction";
+    src: url("./fonts/junction-bold.woff") format("woff");
+    font-weight: bold;
+}
+@font-face {
+    font-family: "Junction";
+    src: url("./fonts/junction-light.woff") format("woff");
+    font-weight: lighter;
+}
+
+/* League Gothic */
+@font-face {
+    font-family: "League Gothic Condensed";
+    src: url("./fonts/leaguegothic-condensed-italic-webfont.woff") format("woff");
+    font-style: italic;
+    font-stretch: condensed;
+}
+@font-face {
+    font-family: "League Gothic Condensed";
+    src: url("./fonts/leaguegothic-condensed-regular-webfont.woff") format("woff");
+    font-style: normal;
+    font-stretch: condensed;
+}
+@font-face {
+    font-family: "League Gothic";
+    src: url("./fonts/leaguegothic-italic-webfont.woff") format("woff");
+    font-style: italic;
+    font-stretch: normal;
+}
+@font-face {
+    font-family: "League Gothic";
+    src: url("./fonts/leaguegothic-regular-webfont.woff") format("woff");
+    font-style: normal;
+    font-stretch: normal;
+}
+
+/* Manuale */
+@font-face {
+    font-family: "Manuale";
+    src: url("./fonts/Manuale-BoldItalic.woff") format("woff");
+    font-weight: bold;
+    font-style: italic;
+}
+@font-face {
+    font-family: "Manuale";
+    src: url("./fonts/Manuale-Bold.woff") format("woff");
+    font-weight: bold;
+    font-style: normal;
+}
+@font-face {
+    font-family: "Manuale";
+    src: url("./fonts/Manuale-ExtraBoldItalic.woff") format("woff");
+    font-weight: 800;
+    font-style: italic;
+}
+@font-face {
+    font-family: "Manuale";
+    src: url("./fonts/Manuale-ExtraBold.woff") format("woff");
+    font-weight: 800;
+    font-style: normal;
+}
+@font-face {
+    font-family: "Manuale";
+    src: url("./fonts/Manuale-Italic.woff") format("woff");
+    font-weight: normal;
+    font-style: italic;
+}
+@font-face {
+    font-family: "Manuale";
+    src: url("./fonts/Manuale-Regular.woff") format("woff");
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: "Manuale";
+    src: url("./fonts/Manuale-LightItalic.woff") format("woff");
+    font-weight: 300;
+    font-style: italic;
+}
+@font-face {
+    font-family: "Manuale";
+    src: url("./fonts/Manuale-Light.woff") format("woff");
+    font-weight: 300;
+    font-style: normal;
+}
+
+/* Prociono */
+@font-face {
+    font-family: "Prociono";
+    src: url("./fonts/Prociono-Regular-webfont.woff") format("woff");
+    font-weight: normal;
+    font-style: normal;
+}

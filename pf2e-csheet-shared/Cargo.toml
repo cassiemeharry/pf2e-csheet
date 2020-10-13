@@ -1,0 +1,42 @@
+[package]
+name = "pf2e-csheet-shared"
+version = "0.1.0"
+authors = ["Cassie Meharry <cassie@prophetessof.tech>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[features]
+default = []
+test = ["smartstring/arbitrary", "smartstring/proptest"]
+wasm = ["uuid/wasm-bindgen"]
+
+[dependencies]
+async-trait = "0.1"
+derive_more = "0.99"
+futures = "*"
+lazy_static = "1"
+log = "0.4"
+peg = "0.6"
+ref-cast = "1"
+regex = "1"
+serde = { features = ["derive"], version = "1" }
+serde_json = "*"
+smartstring = { features = ["serde"], version = "0.2" }
+thiserror = "1"
+uuid = { features = ["serde", "v4"], version = "0.8" }
+
+[dependencies.rocket]
+git = "https://github.com/SergioBenitez/Rocket.git"
+rev = "1369dc47a357567ec3d3d711e318248dabd4b7f7"
+optional = true
+
+[dependencies.smallvec]
+features = ["serde", "write", "const_generics"]
+version = "1"
+
+[dev-dependencies]
+pretty_assertions = "0.6"
+pretty_env_logger = "0.4"
+proptest = "0.10"
+proptest-derive = "0.2"

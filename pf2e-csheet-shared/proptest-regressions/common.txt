@@ -1,0 +1,18 @@
+# Seeds for failure cases proptest has generated in the past. It is
+# automatically read and these particular cases re-run before any
+# novel cases are generated.
+#
+# It is recommended to check this file in to source control so that
+# everyone who runs the test benefits from these saved cases.
+cc 8ce1d5e0d1c0279269a32ca1ffe554f2ee476bd6054851ba90520b3c4d939959 # shrinks to r_1 = Ancestry(Ancestry { common: ResourceCommon { name: "", traits: [], description: CalculatedString { parts: [] }, choices: ResourceChoices { map: {} }, effects: Effects([AddPenalty(PenaltyEffect { common: EffectCommon { conditions: Conditions { inner: None } }, penalty_type: Circumstance, target: "", value: Named("") })]), conditions: Conditions { inner: None } } })
+cc e58f0970b8c5b69e97d51de8811ef7fd077a1550e5e15f111799e47d4680a5c8 # shrinks to x_1 = ResourceRef { name: "a", modifier: Some("A"), resource_type: None }
+cc d1358e8185408c0b375a1437023c92f9001f908e7d0366d9f2c78e5faf3ac26e # shrinks to x_1 = ResourceRef { name: "A", modifier: Some("0"), resource_type: None }
+cc 13e27e6d24f423202e48c7456e746f0918fb1ba57fbed9cd829a96b8c5d2a002 # shrinks to x_1 = Bonus { circumstance: 0, item: 0, proficiency: 1, status: 0, untyped: [] }
+cc 9537644c0d42d6c6f8a9c6733de6e8ba61b90b5cdfe1b1d6823ba6cc1bb40975 # shrinks to x_1 = Penalty { circumstance: [], item: [], status: [1], untyped: [] }
+cc 2d98c93560b4a25ebfe0e1c4a4223a78e7027240afdb6ef37b75d2da0e7cb9dc # shrinks to x_1 = Op(Add, [Named("A_"), Named("a_"), Modifier(Modifier { bonus: Bonus { circumstance: 0, item: 0, proficiency: 0, status: 0, untyped: [] }, penalty: Penalty { circumstance: [], item: [], status: [], untyped: [] } }), Modifier(Modifier { bonus: Bonus { circumstance: 0, item: 0, proficiency: 0, status: 0, untyped: [] }, penalty: Penalty { circumstance: [], item: [], status: [], untyped: [] } })])
+cc 41fbf402e85ac0f8bba1f672e52dfc6669c782ad2be474e72f144a89dbc72c07 # shrinks to x_1 = GrantSpecificFeat(GrantSpecificFeatEffect { common: EffectCommon { conditions: Conditions { inner: Or([]) } }, feat: TypedRef { name: "a", modifier: None, resource_type: PhantomData } })
+cc a7b519225815a3c10ea71b0903cf104e8866d82c9960329f3b9310276d946a0d # shrinks to x_1 = Conditions { inner: Or([]) }
+cc c4e54ab1f741efa645a5323556da47406e679ebee8696d6b1929e21f12fafdbf # shrinks to x_1 = Ancestry(Ancestry { common: ResourceCommon { name: "", traits: [], description: Some(CalculatedString { parts: [Literal("")] }), choices: None, effects: None, conditions: None } })
+cc 54a5d480c5b7b4e601a9d12c52c77de785663b89126ad5b45cde4a57e3fb2e3c # shrinks to x_1 = CalculatedString { parts: [Literal("A["), Calc(Named("aA"))] }
+cc bd8ab29147e38e7dc7e6fb7cf1af008d504453487c6b6225ab779eb2da0e7009 # shrinks to x_1 = CalculatedString { parts: [Literal("[[A")] }
+cc e9ef5fe25a8b0b4b7c9d92f9a52e653f0f182e844e55ec48d8b4f6652904257b # shrinks to x_1 = ClassFeature { common: ResourceCommon { name: "", traits: [], description: None, choices: None, effects: None, conditions: None }, details: InitialProficiencies(ClassInitialProficiencies { perception: Untrained, fort_save: Untrained, reflex_save: Untrained, will_save: Untrained, skills_trained: [Lore(" 0")], free_skill_trained: 0, weapon_proficiencies: ClassWeaponProficiencies { unarmed: Untrained, simple: Untrained, martial: Untrained, advanced: Untrained }, armor_proficiencies: ClassArmorProficiencies { unarmored: Untrained, light: Untrained, medium: Untrained, heavy: Untrained }, class_dc: Untrained }) }

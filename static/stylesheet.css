@@ -1,0 +1,244 @@
+/* TODO: styles */
+@import "./fonts.css";
+body {
+    background-color: #f2eeeb;
+    font-family: "Manuale", monospace;
+    max-width: 980px;
+    min-height: 30em;
+    margin: 10pt auto;
+    padding: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+button {
+    background: #ededed;
+    border: 1px solid #ccc;
+    padding: 5pt;
+    border-radius: 3pt;
+    cursor: Pointer;
+}
+button:active, button.active {
+    background: #e5e5e5;
+    -webkit-box-shadow: inset 0 0 5pt #c1c1c1;
+    -moz-box-shadow: inset 0 0 5pt #c1c1c1;
+    box-shadow: inset 0 0 5pt #c1c1c1;
+    outline: none;
+}
+input, select {
+    box-sizing: border-box;
+    width: 100%;
+}
+h1, h2 {
+    font-family: "Manuale", monospace;
+    font-weight: 800;
+    margin: 10pt 0;
+}
+h1 {
+    color: #58180d;
+    font-size: 24pt;
+}
+h2 {
+    color: #02256d;
+    font-size: 20pt;
+}
+h3, h4, h5, h6 {
+    font-family: "League Gothic", monospace;
+    font-weight: normal;
+    margin: 10pt 0;
+}
+h4, h5, h6 {
+    text-transform: uppercase;
+    letter-spacing: 0.5pt;
+}
+p {
+    text-align: justify;
+}
+h3 {
+    color: #58180d;
+    font-size: 20pt;
+}
+h4 {
+    display: block;
+    padding: 1pt 6pt 0 6pt;
+    font-size: 14pt;
+    line-height: 20pt;
+    background-color: #002664;
+    color: #f2eeeb;
+    border-top-left-radius: 8pt;
+    border-top-right-radius: 8pt;
+    margin: 10pt 0;
+}
+h4::after {
+    content: "";
+    display: block;
+    position: relative;
+    top: 3pt;
+    margin: 0 -6pt;
+    border-bottom: 1pt solid black;
+}
+h5, h6 {
+    font-size: 14pt;
+}
+table td.divider {
+    border-bottom: 1pt solid rgba(0, 0, 0, 0.2);
+}
+
+main > header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    border-bottom: 1pt solid rgba(0, 0, 0, 0.2);
+    padding-bottom: 10pt;
+    margin-bottom: 10pt;
+}
+main > header > h1 {
+    margin: 0;
+    flex: 1 0;
+    white-space: nowrap;
+}
+main > header > nav {
+    flex: 0 0 content;
+}
+main > header > nav > button {
+    margin-left: 0.5em;
+}
+main > header > nav > button:first-child {
+    margin-left: 0;
+}
+
+#save-load-pane table {
+    min-width: 100%;
+}
+#save-load-pane th.loaded, #save-load-pane td.loaded {
+    text-align: center;
+}
+#save-load-pane th.name, #save-load-pane td.name, #save-load-pane th.class, #save-load-pane td.class {
+    text-align: left;
+}
+#save-load-pane th.level, #save-load-pane td.level {
+    text-align: right;
+}
+#save-load-pane th.actions, #save-load-pane td.actions {
+    text-align: center;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+#core-pane {
+    display: flex;
+    justify-content: space-between;
+}
+#core-pane > #choices-to-make {
+    flex: 1 1;
+    padding-left: 20pt;
+}
+#core-pane > .core-info {
+    flex: 0 0;
+    padding-left: 20pt;
+}
+#core-pane > .core-info > table {
+    width: 250pt;
+}
+#core-pane > .core-info th {
+    text-align: left;
+}
+
+span.spell {
+    font-style: italic;
+}
+svg.icon {
+    display: inline-block;
+    height: 1em;
+    vertical-align: sub;
+}
+.info-box {
+    font-size: 10pt;
+    margin: 10pt 0;
+}
+.info-box p {
+    margin-top: 0;
+    margin-bottom: 1pt;
+}
+.info-box > header {
+    margin-bottom: 3pt;
+    border-bottom: 1pt solid black;
+    display: flex;
+    align-items: baseline;
+    font-family: "League Gothic";
+    font-weight: normal;
+    text-transform: uppercase;
+}
+.info-box > header > * {
+    font-size: 14pt;
+    margin: 0;
+}
+.info-box > header > h5 {
+    flex: 1 0;
+}
+.info-box > header > p {
+    flex: 0 1 content;
+    text-align: right;
+}
+.info-box > section {
+    font-size: 9pt;
+    line-height: 13pt;
+    border-bottom: 1pt solid black;
+    padding-left: 0.25in;
+    text-indent: -0.25in;
+}
+.info-box > section:last-child {
+    border-bottom: none;
+}
+.info-box > section p.text {
+    margin-left: -0.25in;
+    text-indent: 0;
+}
+.info-box > section p > .label {
+    font-weight: bold;
+}
+.trait {
+    font-family: "League Gothic";
+    color: white;
+    border: 2pt solid #dac68a;
+    border-top-width: 1pt;
+    border-bottom-width: 0;
+    text-transform: uppercase;
+    background-color: #58180d;
+    font-size: 9pt;
+    letter-spacing: 0.5pt;
+    padding: 0 2pt;
+    display: inline-block;
+    margin-bottom: 2pt;
+    text-indent: 0;
+}
+.trait.rarity-uncommon {
+    background-color: #98513d;
+}
+.trait.rarity-rare {
+    background-color: #002664;
+}
+.trait.rarity-unique {
+    background-color: #54166e;
+}
+.trait.size {
+    background-color: #3b7b59;
+}
+.trait.alignment {
+    background-color: #576293;
+}
+table.ability-scores {
+    text-align: center;
+}
+table.ability-scores input[type=number] {
+    text-align: center;
+    width: 25pt;
+}
+.pane p {
+    margin: 2pt 0;
+}
+table#feat-categories td:nth-child(2) {
+    max-width: 10em;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
